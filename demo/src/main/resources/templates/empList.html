@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	<meta charset="UTF-8">
+	<title>EmpList</title>
+	<style>
+		.highlight {
+			color: red;
+		}
+	</style>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<th>no</th>
+				<th>employee_id</th>
+				<th>first_name</th>
+				<th>last_name</th>
+				<th>salary</th>
+				<th>hire_date</th>
+			</tr>
+		<!-- Map과 List로 반환되는 경우 대문자로 컬럼명 작성해야 함. -->
+		<!-- VO 사용해도 됨. -->
+			<tr th:each="emp : ${empList}">
+				<td th:text="${emp.count}"></td>
+				<td th:text="${emp.employeeId}">없음</td>
+				<td th:text="${emp.firstName}">없음</td>
+				<td th:text="${emp.lastName}"></td>
+				<td th:text="${emp.salary}" th:class="${emp.salary} > 10000 ? 'highlight'">0</td>
+				<td th:text="${emp.hireDate}"></td>
+			</tr>
+		</table>
+	</body>
+</html>
+   
