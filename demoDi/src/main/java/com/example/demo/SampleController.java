@@ -98,15 +98,4 @@ public class SampleController {
 		log.debug("todoDto: " + dto);
 		return mv;
 	}
-	
-	
-	@GetMapping("/ex06")
-	public String ddd() {
-		return "sample2";
-	}
-	
-//	@GetMapping("aaa")
-//	public String department() {
-//		return "sample";
-//	}
 }

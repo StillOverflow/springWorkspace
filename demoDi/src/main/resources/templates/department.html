@@ -5,11 +5,18 @@
 <title>Department</title>
 </head>
 <body>
-	<form action="insert" method="post"> <!-- /insert 경로 -->
-		<label for="departmentId">ID</label><input type="text" name="departmentId" id="departmentId">
-		<label for="departmentName">NAME</label><input type="text" name="departmentName" id="departmentName">
-		<label for="managerId">MGR</label><input type="text" name="managerId" id="managerId">
-		<label for="locationId">LOCATION</label><input type="text" name="locationId" id="locationId">
+	<form action="/dept/insert" method="post"> <!-- /insert 경로 -->
+		<label for="departmentId">ID</label><br>
+		<input type="text" name="departmentId" id="departmentId"><br>
+		
+		<label for="departmentName">NAME</label><br>
+		<input type="text" name="departmentName" id="departmentName"><br>
+		
+		<label for="managerId">MGR</label><br>
+		<input type="text" name="managerId" id="managerId"><br>
+		
+		<label for="locationId">LOCATION</label><br>
+		<input type="text" name="locationId" id="locationId"><br><br>
 		<button>저장</button>	
 	</form>
 </body>
