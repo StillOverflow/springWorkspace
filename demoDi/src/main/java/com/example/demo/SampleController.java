@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.demo.di.SampleDtoList;
-import com.example.demo.di.TodoDto;
+import com.example.demo.di.SampleDTOList;
+import com.example.demo.di.TodoDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,7 +39,7 @@ public class SampleController {
 		return "sample"; // @Controller 사용 시 html파일로 자동 매핑
 	}
 	
-//	@GetMapping("sample")
+//	@GetMapping("/sample")
 	@RequestMapping(value="sample", method={RequestMethod.GET, RequestMethod.POST})
 	public String sample() {
 		return "sample2";
@@ -70,7 +70,7 @@ public class SampleController {
 	
 	// 객체 타입의 파라미터 여러 개 받기 (DtoList 클래스 생성)
 	@PostMapping("/ex03")
-	public String ex03(@RequestBody SampleDtoList list) {
+	public String ex03(@RequestBody SampleDTOList list) {
 		log.debug("list: " + list);
 		return "sample";
 	}
@@ -78,7 +78,7 @@ public class SampleController {
 	
 	
 	@GetMapping("/ex04")
-	public String ex04(@ModelAttribute(name="todo") TodoDto todo, Model model) {
+	public String ex04(@ModelAttribute(name="todo") TodoDTO todo, Model model) {
 		// html 파일에서 전달받은 데이터를 꺼내 쓸 수 있음.
 		model.addAttribute("serverTime", new Date());
 		log.debug("todo: " + todo);
@@ -92,10 +92,21 @@ public class SampleController {
 	
 	// ModelAndView : Model 매개변수 따로 지정하지 않고 모델과 뷰를 합친 것. 사용방식 동일
 	@GetMapping("/ex05")
-	public ModelAndView ex05(@ModelAttribute("todo") TodoDto dto) {
+	public ModelAndView ex05(@ModelAttribute("todo") TodoDTO dto) {
 		ModelAndView mv = new ModelAndView("sample"); // html명 (연결할 뷰페이지)
 		mv.addObject("serverTime", new Date());
 		log.debug("todoDto: " + dto);
 		return mv;
 	}
+	
+	
+	@GetMapping("/ex06")
+	public String ddd() {
+		return "sample2";
+	}
+	
+//	@GetMapping("aaa")
+//	public String department() {
+//		return "sample";
+//	}
 }
