@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.board.mapper.BoardMapper">
+<mapper namespace="com.example.demo.mapper.BoardMapper">
 
 	<insert id="insert" parameterType="BoardDTO">
 			INSERT INTO tbl_board (
@@ -50,6 +50,7 @@
 			       regdate,
 			       updatedate
 			FROM   tbl_board
+			ORDER  BY bno DESC
 	</select>
 
 </mapper>
