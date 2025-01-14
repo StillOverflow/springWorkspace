@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.board.mapper.BoardMapper">
+
+	<insert id="insert" parameterType="BoardDTO">
+			INSERT INTO tbl_board (
+														bno, 
+														title, 
+														content, 
+														writer
+														) 
+			VALUES (
+							seq_board.nextval, 
+							#{title}, 
+							#{content}, 
+							#{writer}
+							)
+	</insert>
+
+	<update id="update" parameterType="BoardDTO">
+			UPDATE tbl_board
+			SET    updatedate = SYSDATE
+			       <if test="title != null">,title = #{title}</if>
+			       <if test="content != null">,content = #{content}</if>
+			       <if test="writer != null">,writer = #{writer}</if>
+			WHERE  bno = #{bno}
+	</update>
+
+	<delete id="delete">
+			DELETE FROM tbl_board
+			WHERE  bno = #{bno}
+	</delete>
+
+	<select id="read" resultType="BoardDTO">
+			SELECT bno,
+			       title,
+			       content,
+			       writer,
+			       regdate,
+			       updatedate
+			FROM   tbl_board
+			WHERE  bno = #{bno}
+	</select>
+
+	<select id="getList" resultType="BoardDTO">
+			SELECT bno,
+			       title,
+			       content,
+			       writer,
+			       regdate,
+			       updatedate
+			FROM   tbl_board
+	</select>
+
+</mapper>
