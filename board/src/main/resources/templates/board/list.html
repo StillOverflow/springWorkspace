@@ -11,7 +11,7 @@
 			<div class="col mt-5 mb-2 d-flex justify-content-between">
 				<span class="fw-bolder fs-4">심심한 게시판</span>
 				<span class="text-primary fs-5" th:if="${regResult}">새로운 글이 등록되었습니다.</span>
-				<button class="btn btn-outline-secondary" onclick="location.href='/board/form'">글쓰기</button>		
+				<button class="btn btn-outline-secondary" onclick="location.href='/board/register'">글쓰기</button>		
 			</div>
 		</div>	
 		<div class="container card p-0">
@@ -36,7 +36,63 @@
 				</tbody>
 			</table>
 		</div>
+		
+		<!-- 페이지네이션 추가 -->
+		<nav class="d-flex justify-content-center mt-4">
+	  	<ul class="pagination">
+		    <li class="page-item" th:classappend="${paging.startPage} == 1 ? disabled"> <!-- th:classappend 사용하면 클래스 추가로 설정 가능 -->
+		    	<a class="page-link" th:href="'/board/list?page=' + ${paging.startPage - 1} + ${search.keyword != null && search.keyword != '' ? '&type=' + search.type + '&keyword=' + search.keyword + '&pageUnit=' + search.pageUnit : ''}">이전</a>
+		    </li>
+	
+		    <li th:each="num : *{#numbers.sequence(paging.startPage, paging.endPage)}"
+		        class="page-item-danger"
+		        th:classappend="${num} == ${paging.page} ? active"> <!-- numbers.sequence(start, end) : start~end까지의 배열을 만들어줌 -->
+		        
+		        <a class="page-link" th:text="${num}"
+		        	th:href="'/board/list?page=' + ${num} + ${search.keyword != null && search.keyword != '' ? '&type=' + search.type + '&keyword=' + search.keyword + '&pageUnit=' + search.pageUnit : ''}">2</a>
+		        
+		        <!-- 
+		        <a th:if="${search.keyword != null && search.keyword != ''}" 
+		        	 class="page-link" th:href="|/board/list?page=${num}&type=${search.type}&keyword=${search.keyword}&pageUnit=${search.pageUnit}|" th:text="${num}">2</a>
+		        <a th:unless="${search.keyword != null && search.keyword != ''}" 
+		        	 class="page-link" th:href="|/board/list?page=${num}|" th:text="${num}">2</a>
+		    		-->
+		    </li>
+	
+		    <li class="page-item" th:classappend="${paging.endPage} == ${paging.lastPage} ? disabled">
+		    	<a class="page-link" th:href="'/board/list?page=' + ${paging.endPage + 1} + ${search.keyword != null && search.keyword != '' ? '&type=' + search.type + '&keyword=' + search.keyword + '&pageUnit=' + search.pageUnit : ''}">다음</a>
+		    </li>
+		  </ul>
+		</nav>
+		
+		<!-- 검색 추가 -->
+		<div class='row ms-5'>
+			<div class="col-lg-12 d-flex justify-content-center ms-4">
+				<form id='searchForm' action="/board/list" method='get' class="row">
+					<select name='type' class="form-control w-25 me-2">
+						<option value="" hidden>검색조건</option>
+						<option value="T">제목</option>
+						<option value="C">내용</option>
+						<option value="W">작성자</option>
+						<option value="TC">제목 or 내용</option>
+						<option value="TW">제목 or 작성자</option>
+						<option value="TWC">제목 or 내용 or 작성자</option>
+					</select> 
+					<input type='text' name='keyword' class="form-control w-25 me-2" /> 
+					<input type='hidden' name='page' value="1"/> 
+					<select name="pageUnit" class="form-control" style="width: 80px">
+						<option value="10">10</option>
+						<option value="20">20</option>
+						<option value="30">30</option>
+					</select>
+					<button class='btn btn-outline-primary ms-2' style="width: 80px">검색</button>
+				</form>
+			</div>
+		</div>
+
 	</div>
+	
+	
 	
 	<script th:inline="javascript"> // th:inline = thymeleaf 스크립트 인식
 		// const result = [[${param.regResult}]];
@@ -47,6 +103,14 @@
 		if([[${delResult}]]) {
 			alert("게시글이 삭제되었습니다.");
 		}
+		
+		/*
+		function gopage(p){
+			searchForm.page.value = p;
+			searchForm.submit();
+			// location.href = "list?page=" + p;
+		}
+		*/
 	</script>
 </body>
 </html>

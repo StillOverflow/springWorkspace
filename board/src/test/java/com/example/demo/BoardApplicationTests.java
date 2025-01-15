@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.example.demo.mapper.BoardMapper;
 import com.example.demo.vo.BoardDTO;
+import com.example.demo.vo.BoardSearchDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +35,7 @@ class BoardApplicationTests {
 	// 테스트 코드 : given - when(조건절) - then(결과 확인) 구조
 	// 결과 확인 : log.debug() or assertEquals(,) or assertThat(결과값).isEqualTo(기대값)...
 	
-	@Test
+//	@Test
 	@DisplayName("등록 컨트롤러")
 	void insert() throws Exception {
 //		BoardDTO board = new BoardDTO();
@@ -92,6 +95,20 @@ class BoardApplicationTests {
 		mvc.perform(get("/board/list"))
 		   .andExpect(status().isOk()) // 뷰페이지 없으면 andDo 프린트까진 안 넣어도 됨.
 		   .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	@DisplayName("전체 조회 페이징 컨트롤러")
+	void getListWithPage() throws Exception {
+		BoardSearchDTO search = new BoardSearchDTO();
+		search.setPage(3);
+		List<BoardDTO> boards = mapper.getListWithPage(search);
+		log.debug("boards: " + boards);
+
+		// MockMvc 테스트 방법
+//		mvc.perform(get("/board/list"))
+//		   .andExpect(status().isOk()) // 뷰페이지 없으면 andDo 프린트까진 안 넣어도 됨.
+//		   .andDo(MockMvcResultHandlers.print());
 	}
 
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.mapper.BoardMapper;
 import com.example.demo.vo.BoardDTO;
+import com.example.demo.vo.BoardSearchDTO;
 
 import lombok.Data;
 
@@ -38,6 +39,16 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<BoardDTO> getList() {
 		return mapper.getList();
+	}
+	
+	@Override
+	public List<BoardDTO> getListWithPage(BoardSearchDTO search) {
+		return mapper.getListWithPage(search);
+	}
+
+	@Override
+	public int getCount(BoardSearchDTO search) {
+		return mapper.getCount(search);
 	}
 	
 	

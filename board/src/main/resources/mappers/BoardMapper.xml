@@ -52,5 +52,61 @@
 			FROM   tbl_board
 			ORDER  BY bno DESC
 	</select>
+	
+	<!-- 게시글 목록 페이징 구현 -->
+	<select id="getListWithPage" resultType="BoardDTO" parameterType="BoardSearchDTO">
+			SELECT b.*
+			FROM  (SELECT /*+ INDEX_DESC(tbl_board pk_board) */
+			              ROWNUM rn, 
+										bno, 
+										title, 
+										writer, 
+										regdate,
+										updatedate
+			       FROM   tbl_board
+			       <where>
+			       	<include refid="criteria"/>
+			       </where>
+			       ) b
+			WHERE  b.rn >= #{start}
+			<![CDATA[
+			  AND  b.rn <= #{end}
+			]]>
+	</select>
+	
+	<!-- 전체 게시글 수 -->
+	<select id="getCount" resultType="int">
+		SELECT COUNT(*)
+		FROM   tbl_board
+		<where>
+			<include refid="criteria"/>
+		</where>
+	</select>
+	
+	<!-- 동적 검색조건 처리 (재사용 sql) -->
+	<sql id="criteria">
+		<if test="keyword != null and keyword != ''">
+			<trim suffixOverrides="AND">
+				<trim prefix="(" suffix=") AND " prefixOverrides="OR"> <!-- 이어붙인 후 앞에 OR 남아있으면 자동 삭제-->
+					<foreach item="type" collection="typeArr">
+						<trim prefix="OR"> <!-- 다중조건이 들어오는 경우 OR로 이어붙여줌. -->
+							<choose>
+								<!-- 그냥 type=='T' 하면 char로 비교하므로 equals()나 toString() 필요 -->
+								<when test="type == 'T'.toString()">
+									title LIKE '%' || #{keyword} || '%'
+								</when>
+								<when test="type == 'C'.toString()">
+									content LIKE '%' || #{keyword} || '%'
+								</when>
+								<when test="type == 'W'.toString()">
+									writer LIKE '%' || #{keyword} || '%'
+								</when>
+							</choose>
+						</trim>
+					</foreach>
+				</trim>
+			</trim>
+		</if>
+	</sql>
 
 </mapper>

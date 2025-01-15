@@ -20,18 +20,21 @@
 							<th class="table-danger text-center">제목</th>
 							<td>
 								<input type="text" name="title" class="form-control">
+								<span class="text-danger" th:errors="${boardDTO.title}"></span>
 							</td>
 						</tr>
 						<tr>
 							<th class="table-danger text-center">내용</th>
 							<td>
 								<textarea class="form-control" name="content" rows="5"></textarea>
+								<span class="text-danger" th:errors="${boardDTO.content}"></span>
 							</td>
 						</tr>
 						<tr>
 							<th class="table-danger text-center">작성자</th>
 							<td>
 								<input type="text" name="writer" class="form-control">
+								<span class="text-danger" th:errors="${boardDTO.writer}"></span>
 							</td>
 						</tr>
 						<tr>

@@ -5,14 +5,18 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.common.Paging;
 import com.example.demo.service.BoardServiceImpl;
 import com.example.demo.vo.BoardDTO;
+import com.example.demo.vo.BoardSearchDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,8 +36,21 @@ public class BoardController {
 	}
 	
 	@GetMapping("/list")
-	public void list(Model model) {
-		model.addAttribute("list", service.getList());
+	public void list(BoardSearchDTO search, Model model, Paging paging) {
+//		model.addAttribute("list", service.getList());
+		
+		// 페이징 적용
+		// paging.setPage(...);
+		paging.setTotalRecord(service.getCount(search));
+		model.addAttribute("search", search);
+		model.addAttribute("paging", paging);
+		
+		search.setStart(paging.getFirst());
+		search.setEnd(paging.getLast());
+		log.debug("paging: " + paging);
+		log.debug("search: " + search);
+		model.addAttribute("list", service.getListWithPage(search));
+		
 //		return "board/list"; // 생략해도 url과 html 이름이 같다면 자동으로 찾음.
 	}
 	
@@ -43,13 +60,16 @@ public class BoardController {
 		return "board/info";
 	}
 	
-	@GetMapping("/form")
-	public void form(Model model) {
+	@GetMapping("/register")
+	public String form(BoardDTO board, Model model) {
 		model.addAttribute("now", new Date());
+		return "board/form";
 	}
 	
-	@PostMapping("/register")
-	public String insert(BoardDTO board, RedirectAttributes rttr) {
+	@PostMapping("/register") // Validation 유효성검사 적용. 매개변수 순서 중요!!(오류 발생)
+	public String insert(@Validated BoardDTO board, BindingResult bresult, RedirectAttributes rttr) {
+		if(bresult.hasErrors()) return "board/form"; // html에서 th:errors="${board.title}"... 로 메세지 반환 가능
+		
 		log.info("board: " + board);
 		boolean result = service.register(board);
 		log.debug("결과: " + result);
