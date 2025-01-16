@@ -37,8 +37,9 @@
 			       content,
 			       writer,
 			       regdate,
-			       updatedate
-			FROM   tbl_board
+			       updatedate,
+			       (SELECT COUNT(*) FROM tbl_reply WHERE bno = b.bno) replyCnt
+			FROM   tbl_board b
 			WHERE  bno = #{bno}
 	</select>
 
@@ -48,8 +49,9 @@
 			       content,
 			       writer,
 			       regdate,
-			       updatedate
-			FROM   tbl_board
+			       updatedate,
+			       (SELECT COUNT(*) FROM tbl_reply WHERE bno = b.bno) replyCnt
+			FROM   tbl_board b
 			ORDER  BY bno DESC
 	</select>
 	
@@ -62,8 +64,9 @@
 										title, 
 										writer, 
 										regdate,
-										updatedate
-			       FROM   tbl_board
+										updatedate,
+										(SELECT COUNT(*) FROM tbl_reply WHERE bno = b.bno) replyCnt
+			       FROM   tbl_board b
 			       <where>
 			       	<include refid="criteria"/>
 			       </where>

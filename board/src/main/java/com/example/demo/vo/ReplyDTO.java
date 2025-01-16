@@ -14,20 +14,17 @@ import lombok.NoArgsConstructor;
 @Builder // setTitle();... 말고 체이닝 형식으로 사용 가능. builder().title().build();
 @NoArgsConstructor // out of bind 오류 해결
 @AllArgsConstructor
-public class BoardDTO {
-	private Integer rn; // cnt
-	private Integer bno; // int : 원시적 자료형으로 null 오류 발생 (Integer 래퍼 클래스로 null 가능)
+public class ReplyDTO {
+	private Integer rno;
+	private Integer bno; 
 	
-	@NotBlank // validation dependency 추가 이후 사용 가능 (Controller @Validated 함께 사용)
-	private String title;
+	// validation dependency 추가 이후 사용 가능 (Controller @Validated 함께 사용)
 	@NotBlank(message="내용을 입력하세요.")
-	private String content;
+	private String reply;
 	@NotBlank
-	private String writer;
+	private String replyer;
 	
 	@DateTimeFormat(pattern="yyyy/MM/dd")
-	private Date regdate;
+	private Date replydate;
 	private Date updatedate;
-	
-	private int replyCnt;
 }
