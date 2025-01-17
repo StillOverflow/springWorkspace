@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.insa.mapper.EmpMapper">
+
+	<!-- 부서/직업/firstName으로 검색 가능하도록 함. -->
+	<!-- 전체조회 & 검색 -->
+	<select id="getList" resultType="com.example.demo.insa.service.EmpDTO" parameterType="com.example.demo.insa.service.EmpSearchDTO">
+		SELECT e.*
+		FROM   (SELECT ROWNUM rn, EMPLOYEE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, HIRE_DATE, JOB_ID, 
+						       SALARY, COMMISSION_PCT, MANAGER_ID, DEPARTMENT_ID
+						FROM   employees
+						<where>
+							<if test="type == 'D'">department_id = #{keyword}</if>
+							<if test="type == 'J'">job_id = #{keyword}</if>
+							<if test="type == 'N'">first_name = #{keyword}</if>
+						</where>) e
+		WHERE  e.rn >= #{start}
+		<![CDATA[
+		  AND  e.rn <= #{end}
+		]]>
+	</select>
+	
+	<!-- 사원 수 조회 -->
+	<select id="getCount" parameterType="com.example.demo.insa.service.EmpSearchDTO">
+		SELECT COUNT(*) 
+		FROM employees
+		<where>
+			<if test="type == 'D'">department_id = #{keyword}</if>
+			<if test="type == 'J'">job_id = #{keyword}</if>
+			<if test="type == 'N'">first_name = #{keyword}</if>
+		</where>
+	</select>
+	
+	<!-- jobs 테이블 조회 -->
+	<select id="getJobList" resultType="com.example.demo.insa.service.JobDTO">
+		SELECT * FROM jobs
+	</select>
+	
+	<!-- 사원 등록 -->
+	<insert id="register" parameterType="com.example.demo.insa.service.EmpDTO">
+		INSERT INTO employees (
+													 EMPLOYEE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, HIRE_DATE, JOB_ID, 
+													 SALARY, COMMISSION_PCT, MANAGER_ID, DEPARTMENT_ID
+													)
+		VALUES (
+						(SELECT e.employee_id + 1
+						 FROM   (SELECT ROWNUM rn, employee_id
+						         FROM   employees
+						         ORDER  BY employee_id DESC) e
+						 WHERE e.rn = 1),
+						 #{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{hireDate}, #{jobId},
+						 #{salary}, #{commissionPct}, #{managerId}, #{departmentId}
+					 )
+	</insert>
+	
+</mapper>

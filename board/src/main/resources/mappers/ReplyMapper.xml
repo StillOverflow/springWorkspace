@@ -29,6 +29,11 @@
 			DELETE FROM tbl_reply
 			WHERE  rno = #{rno}
 	</delete>
+	
+	<delete id="deleteByBno">
+			DELETE FROM tbl_reply
+			WHERE  bno = #{bno}
+	</delete>
 
 	<select id="getList" resultType="ReplyDTO">
 			SELECT rno, 
@@ -65,6 +70,15 @@
 			SELECT COUNT(*)
 			FROM   tbl_reply
 			WHERE  bno = #{bno}
+	</select>
+	
+	<!-- insert 이후 rno 반환 -->
+	<select id="getRecentRno">
+			SELECT r.rno
+			FROM   (SELECT rno
+			        FROM   tbl_reply
+			        ORDER  BY replydate DESC) r
+			WHERE   ROWNUM = 1
 	</select>
 
 </mapper>

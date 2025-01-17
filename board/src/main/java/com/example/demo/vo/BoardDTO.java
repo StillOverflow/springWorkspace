@@ -18,7 +18,8 @@ public class BoardDTO {
 	private Integer rn; // cnt
 	private Integer bno; // int : 원시적 자료형으로 null 오류 발생 (Integer 래퍼 클래스로 null 가능)
 	
-	@NotBlank // validation dependency 추가 이후 사용 가능 (Controller @Validated 함께 사용)
+	// validation dependency 추가 이후 사용 가능 (Controller @Validated 함께 사용)
+	@NotBlank(message="제목을 입력하세요.")
 	private String title;
 	@NotBlank(message="내용을 입력하세요.")
 	private String content;

@@ -93,20 +93,20 @@
 			<div class="col-lg-12 d-flex justify-content-center ms-4">
 				<form id='searchForm' action="/board/list" method='get' class="row">
 					<select name='type' class="form-control w-25 me-2">
-						<option value="" hidden>검색조건</option>
-						<option value="T">제목</option>
-						<option value="C">내용</option>
-						<option value="W">작성자</option>
-						<option value="TC">제목 or 내용</option>
-						<option value="TW">제목 or 작성자</option>
-						<option value="TWC">제목 or 내용 or 작성자</option>
+						<option value="">전체</option>
+						<option value="T" th:selected="${search.type} == 'T'">제목</option>
+						<option value="C" th:selected="${search.type} == 'C'">내용</option>
+						<option value="W" th:selected="${search.type} == 'W'">작성자</option>
+						<option value="TC" th:selected="${search.type} == 'TC'">제목 or 내용</option>
+						<option value="TW" th:selected="${search.type} == 'TW'">제목 or 작성자</option>
+						<option value="TWC" th:selected="${search.type} == 'TWC'">제목 or 내용 or 작성자</option>
 					</select> 
-					<input type='text' name='keyword' class="form-control w-25 me-2" /> 
+					<input type='text' name='keyword' class="form-control w-25 me-2" th:value="${search.keyword}" /> 
 					<input type='hidden' name='page' value="1"/> 
 					<select name="pageUnit" class="form-control" style="width: 80px">
-						<option value="10">10</option>
-						<option value="20">20</option>
-						<option value="30">30</option>
+						<option value="10" th:selected="${search.pageUnit} == 10">10</option>
+						<option value="20" th:selected="${search.pageUnit} == 20">20</option>
+						<option value="30" th:selected="${search.pageUnit} == 30">30</option>
 					</select>
 					<button class='btn btn-outline-primary ms-2' style="width: 80px">검색</button>
 				</form>

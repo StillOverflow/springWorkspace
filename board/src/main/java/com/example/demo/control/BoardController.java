@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -127,11 +128,20 @@ public class BoardController {
 	}
 	
 	// 게시글 삭제
+	@Transactional // 트랜잭션 내부 작업 구현
 	@GetMapping("/delete") // form method get으로 쿼리스트링 처리
 	public String delete(Integer bno, RedirectAttributes rttr) {
 		log.info("bno: " + bno);
-		boolean result = service.remove(bno);
-		log.debug("결과: " + result);
+		boolean result = false;
+		
+		// 게시글 삭제 시 댓글도 함께 삭제
+		boolean repResult = repService.removeByBno(bno);
+		log.debug("댓글 결과: " + repResult);
+		
+		boolean bResult = service.remove(bno);
+		log.debug("게시글 결과: " + bResult);
+		
+		if(repResult && bResult) result = true;
 		
 		rttr.addFlashAttribute("delResult", result);
 		return "redirect:/board/list";

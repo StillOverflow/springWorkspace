@@ -47,15 +47,26 @@
 		</div>
 		
 		<div class="card p-0 mt-2">
-			<div class="card-header fw-bolder">댓글 [[${board.replyCnt}]]개</div>
+			<div class="card-header fw-bolder">댓글 <span id="replyCnt">[[${board.replyCnt}]]</span>개</div>
 			<table class="table m-0 text-center replyTbl">
 				<tbody>
+					<tr>
+						<td class="text-center align-middle text-primary fw-bolder">댓글쓰기</td>
+						<td colspan="2" class="text-start ps-4"><input type="text" name="reply" id="reply" class="form-control"></td>
+						<td><input type="text" name="replyer" id="replyer" class="form-control"></td>
+						<td>
+							<button class="btn btn-primary btnReplyRegister">등록</button>
+						</td>  
+					</tr>
 					<tr th:each="rep : ${replies}">
 						<td th:text="${rep.rno}"></td>
 						<td th:text="${rep.reply}" class="w-50 text-start ps-4"></td>
 						<td th:text="${rep.replyer}"></td>
 						<td th:text="${rep.updatedate} == null ? ${#dates.format(rep.replydate, 'yyyy-MM-dd')} : ${#dates.format(rep.updatedate, 'yyyy-MM-dd')}"></td>
-						<td><button class="btn btn-outline-danger btn-sm replyDelBtn" th:attr="data-rno=|${rep.rno}|">x</button></td>
+						<td>
+							<button class="btn btn-outline-info btn-sm btnReplyUpdateForm" th:attr="data-rno=|${rep.rno}|">수정</button>
+							<button class="btn btn-outline-danger btn-sm replyDelBtn" th:attr="data-rno=|${rep.rno}|">x</button>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -89,27 +100,40 @@
 				alert("게시글이 수정되었습니다.");
 			}
 			
-			// window.addEventListener("DOMContentLoaded", () => { getReply(); });
-			// 댓글 가져오기 예시 (fetch 이용)
+			/* window.addEventListener("DOMContentLoaded", () => {
+				replyList();       //댓글조회
+				replyDelete();     //삭제 버튼 이벤트 지정
+				replyUpdateForm(); //수정폼 버튼 이벤트 지정
+				replyUpdate();     //수정 버튼 이벤트 지정
+				replyCancel();     //취소 버튼 이벤트 지정
+				replyInsert();     //등록 버튼 이벤트 지정
+			});*/
+			
+			/* 댓글 가져오기 예시 (fetch 이용)
 			function getReply(){
 				const url = '/replies/pages/2/1';
 				fetch(url)
 				.then(resolve => resolve.json())
 				.then(result => {});
-			}
+				// 댓글 결과 처리
+			} */
 			
-			// 댓글 결과 처리
-			//function getReplyProc(result){};
+			window.addEventListener("DOMContentLoaded", () => {
+				deleteReply();
+				makeReplyUpdateForm();
+				replyCancel();
+				replyUpdate("btnReplyUpdate"); // 수정버튼 클래스
+				replyUpdate("btnReplyRegister"); // 등록버튼 클래스
+			});
 			
 			// 댓글 삭제 처리
-			window.addEventListener("DOMContentLoaded", () => {
+			function deleteReply(){
 				document.querySelector('.replyTbl').addEventListener('click', () => { // 핸들러 지정하지 않아도 event 전역 객체로 사용 가능
-					console.log('target: ' + event.target);
 					if(event.target.classList.contains('replyDelBtn')){
-						console.log(event.target.dataset.rno);
+						if(!confirm("댓글을 삭제하시겠습니까?")) return;
 						const tr = event.target.closest('tr');
 						const rno = event.target.dataset.rno; // 사용자속성 data-rno
-						const url = `/replies/${rno}`; //////// replyController 만들어 연결하면 됨.
+						const url = `/replies/${rno}`;
 						
 						fetch(url, {method: 'delete'})
 						.then(resolve => resolve.text()) // String 타입으로 변환
@@ -121,7 +145,134 @@
 						});
 					}
 				});
-			});
+			}
+			
+			
+			// 댓글 등록/수정(취소-저장) 구현하기
+			// 수정폼 호출
+			function makeReplyUpdateForm(){
+				document.querySelector(".replyTbl").addEventListener("click", function(){
+					//수정 폼 버튼이면
+					if(event.target.classList.contains("btnReplyUpdateForm")) {
+						// 버튼을 포함하는 부모태그
+						const tr = event.target.closest("tr");
+						
+						// 수정할 데이터 
+						const rno = event.target.dataset.rno;
+						const reply = tr.children[1].innerHTML;
+						const replyer = tr.children[2].innerHTML;
+						const replyDate = tr.children[3].innerHTML;
+						const item = {rno, reply, replyer, replyDate};
+						
+						// 수정폼으로 변경
+						tr.replaceWith( replyFormMake(item) );	
+					}
+				})
+			}
+			
+			// 수정폼 생성
+			function replyFormMake(item){
+				let tag = document.createElement("tr");
+				tag.className = "replyUpdateForm";
+				tag.innerHTML = `
+							<td id="rno">${item.rno}</td>
+							<td class="text-start ps-4"><input type="text" name="reply" id="reply" value="${item.reply}" data-value="${item.reply}" class="form-control"></td>
+							<td><input type="text" name="replyer" id="replyer" value="${item.replyer}" data-value="${item.replyer}" class="form-control"></td>
+							<td id="replyDate">${item.replyDate}</td>
+							<td>
+								<button class="btn btn-outline-info btn-sm btnReplyUpdate">저장</button>
+								<button class="btn btn-outline-danger btn-sm btnReplyCancel">취소</button>
+							</td>              
+			      `;
+		    return tag;  
+			}
+			
+			// 수정폼에서의 버튼 동작
+			function replyCancel(){
+					document.querySelector(".replyTbl").addEventListener("click", function(){
+						// 취소 버튼이면
+						if(event.target.classList.contains("btnReplyCancel")) {
+							// 버튼을 포함하는 부모태그
+							const tr = event.target.closest("tr");
+							
+							// 원본 데이터 (data-value)
+							const rno = tr.querySelector("#rno").innerHTML;
+							const reply = tr.querySelector("#reply").dataset.value;
+							const replyer = tr.querySelector("#replyer").dataset.value;
+							const replyDate = tr.querySelector("#replyDate").innerHTML;
+						
+							const item = {rno, reply, replyer, replyDate};
+							
+							// 원본으로 변경
+							tr.replaceWith( replyMake(item) );
+						} 
+					})
+				}
+				
+				// 댓글 재생성
+				function replyMake(item){
+					let tag = document.createElement("tr");
+					tag.innerHTML = `
+								<td>${item.rno ? item.rno : 'New'}</td>
+								<td class="w-50 text-start ps-4">${item.reply}</td>
+								<td>${item.replyer}</td>
+								<td>${item.replyDate ? item.replyDate : '방금전'}</td>
+								<td>
+									<button class="btn btn-outline-info btn-sm btnReplyUpdateForm" th:attr="data-rno=|${item.rno}|">수정</button>
+									<button class="btn btn-outline-danger btn-sm replyDelBtn" th:attr="data-rno=|${item.rno}|">x</button>
+								</td>
+				        `;
+			    return tag;    
+				}
+				
+				// 등록 or 수정 실행
+				function replyUpdate(btn){
+					document.querySelector(".replyTbl").addEventListener("click", function(){
+						// 버튼 판별
+						if(event.target.classList.contains(btn)) { // "btnReplyUpdate"
+							console.log(btn + ' 실행');
+							const tr = event.target.closest("tr");
+							
+							const item = {};
+							item.bno = [[${board.bno}]];
+							item.reply = tr.querySelector("#reply").value;
+							item.replyer = tr.querySelector("#replyer").value;
+							if(btn == 'btnReplyUpdate'){
+								item.rno = tr.querySelector("#rno").innerHTML;
+								item.replyDate = tr.querySelector("#replyDate").innerHTML;
+							}
+						
+							//const item = {rno, reply, replyer, replyDate};
+							console.log(JSON.stringify(item));
+							
+							fetch('/replies/', {
+								method: btn == 'btnReplyUpdate' ? 'put' : 'post',
+								headers: {'Content-Type': 'application/json'}, // body로 보내려면 json으로 포맷 명시해야 함.
+								body: JSON.stringify(item)
+							})
+							.then(resolve => resolve.text())
+							.then(result => {
+								console.log(result);
+								if(result != null){
+									if(btn == 'btnReplyUpdate') tr.replaceWith( replyMake(item) ); // 페이지 수정처리					
+									else {
+										item.rno = result; // 결과로 최근 입력된 rno를 반환 받아 사용
+										tr.after( replyMake(item) );
+										let replyCnt = document.querySelector("#replyCnt");
+										replyCnt.innerHTML = Number(replyCnt.innerHTML) + 1;
+										
+										let inputs = tr.querySelectorAll('input');
+										for(let input of inputs){
+											input.value = ''; // 입력했던 값 지우기
+										}
+									};
+								}
+							});
+							
+						}
+					});
+				}
+			
 		</script>
 		
 	</div>

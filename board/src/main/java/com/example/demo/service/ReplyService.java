@@ -9,7 +9,9 @@ public interface ReplyService {
 	boolean register(ReplyDTO board);
 	boolean modify(ReplyDTO board);
 	boolean remove(int rno);
+	boolean removeByBno(int rno);
 	List<ReplyDTO> getList(int bno);
+	String getRecentRno();
 	
 	// 페이징 적용
 	List<ReplyDTO> getListWithPage(ReplySearchDTO search);

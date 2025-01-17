@@ -10,7 +10,9 @@ public interface ReplyMapper {
 	int insert(ReplyDTO reply);
 	int update(ReplyDTO reply);
 	int delete(int rno);
+	int deleteByBno(int rno);
 	List<ReplyDTO> getList(int bno);
+	String getRecentRno();
 	
 	// 페이징 적용
 	List<ReplyDTO> getListWithPage(ReplySearchDTO search);

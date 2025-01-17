@@ -45,4 +45,14 @@ public class ReplyServiceImpl implements ReplyService {
 	public List<ReplyDTO> getListWithPage(ReplySearchDTO search) {
 		return mapper.getListWithPage(search);
 	}
+
+	@Override
+	public boolean removeByBno(int rno) {
+		return mapper.deleteByBno(rno) > 0;
+	}
+
+	@Override
+	public String getRecentRno() {
+		return mapper.getRecentRno();
+	}
 }

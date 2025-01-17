@@ -42,8 +42,7 @@ public class Paging {
 	}
 
 	public int getLastPage() { // 사용
-		lastPage = totalRecord / pageUnit +
-				   ( totalRecord % pageUnit > 0 ? 1 : 0 );
+		lastPage = totalRecord / pageUnit + 1;
 		return lastPage;
 	}
 
@@ -77,7 +76,7 @@ public class Paging {
 	}
 
 	public int getEndPage() {
-		endPage = (page-1)/pageSize * pageSize + pageSize ;
+		endPage = (page - 1) / pageSize * pageSize + pageSize ;
 		if ( endPage > getLastPage() )
 			endPage = getLastPage() ;
 		return endPage;
