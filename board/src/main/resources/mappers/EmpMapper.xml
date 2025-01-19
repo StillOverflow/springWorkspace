@@ -10,9 +10,9 @@
 						       SALARY, COMMISSION_PCT, MANAGER_ID, DEPARTMENT_ID
 						FROM   employees
 						<where>
-							<if test="type == 'D'">department_id = #{keyword}</if>
-							<if test="type == 'J'">job_id = #{keyword}</if>
-							<if test="type == 'N'">first_name = #{keyword}</if>
+							<if test="type == 'D'.toString()">department_id = #{keyword}</if>
+							<if test="type == 'J'.toString()">UPPER(job_id) LIKE '%' || UPPER(#{keyword}) || '%'</if>
+							<if test="type == 'N'.toString()">UPPER(first_name) LIKE '%' || UPPER(#{keyword}) || '%'</if>
 						</where>) e
 		WHERE  e.rn >= #{start}
 		<![CDATA[
@@ -25,9 +25,9 @@
 		SELECT COUNT(*) 
 		FROM employees
 		<where>
-			<if test="type == 'D'">department_id = #{keyword}</if>
-			<if test="type == 'J'">job_id = #{keyword}</if>
-			<if test="type == 'N'">first_name = #{keyword}</if>
+			<if test="type == 'D'.toString()">department_id = #{keyword}</if>
+			<if test="type == 'J'.toString()">UPPER(job_id) LIKE '%' || UPPER(#{keyword}) || '%'</if>
+			<if test="type == 'N'.toString()">UPPER(first_name) LIKE '%' || UPPER(#{keyword}) || '%'</if>
 		</where>
 	</select>
 	

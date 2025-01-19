@@ -10,4 +10,5 @@ public class EmpSearchDTO {
 	
 	private String keyword;
 	private String type;
+	private int pageUnit;
 }

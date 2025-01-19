@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>사원목록</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -13,29 +13,74 @@
 <div class="container">
 	<div class="row">
 		<div class="col">
-			<h2>사원 목록</h2>
+			<h2 class="mt-4">사원 목록</h2>
 			<table class="table text-center">
-				<thead>
+				<thead class="table-success">
 					<tr>
 						<th class="text-center">사번</th>
-						<th class="text-center">이름</th>
+						<th class="text-center">이름 성</th>
 						<th class="text-center">JOB</th>
+						<th class="text-center">부서번호</th>
 						<th class="text-center"></th>
 					</tr>
 				</thead>
 				
 				<tbody>
-					<tr>
-						<td class="text-center">100</td>
-						<td class="text-center">홍길동</td>
-						<td class="text-center">PROGRAMER</td>
+					<tr th:each="emp : ${empList}">
+						<td class="text-center" th:text="${emp.employeeId}">100</td>
+						<td class="text-center" th:text="${emp.firstName} + ' ' + ${emp.lastName}">홍길동</td>
+						<td class="text-center" th:text="${emp.jobId}">PROGRAMER</td>
+						<td class="text-center" th:text="${emp.departmentId}"></td>
 						<td class="text-center">
-							<button class="btnUpd">조회</button>
-							<button class="btnDel">삭제</button>
+							<button class="btn btn-light">조회</button>
+							<button class="btn btn-outline-danger">삭제</button>
 						</td>
 					</tr>	
 				</tbody>
 			</table>
+		</div>
+	</div>
+	
+	<!-- 페이지네이션 추가 -->
+	<nav class="d-flex justify-content-center mt-4">
+  	<ul class="pagination">
+	    <li class="page-item" th:classappend="${paging.startPage} == 1 ? disabled"> <!-- th:classappend 사용하면 클래스 추가로 설정 가능 -->
+	    	<a class="page-link" th:href="'/emp/list?page=' + ${paging.startPage - 1}">이전</a>
+	    </li>
+
+	    <li th:each="num : *{#numbers.sequence(paging.startPage, paging.endPage)}"
+	        class="page-item-danger"
+	        th:classappend="${num} == ${paging.page} ? active"> <!-- numbers.sequence(start, end) : start~end까지의 배열을 만들어줌 -->
+	        
+	        <a class="page-link" th:text="${num}"
+	        	th:href="'/emp/list?page=' + ${num} + ${search.keyword != null && search.keyword != '' ? '&type=' + search.type + '&keyword=' + search.keyword + '&pageUnit=' + search.pageUnit : ''}">2</a>
+	    </li>
+
+	    <li class="page-item" th:classappend="${paging.endPage} == ${paging.lastPage} ? disabled">
+	    	<a class="page-link" th:href="'/emp/list?page=' + ${paging.endPage + 1}">다음</a>
+	    </li>
+	  </ul>
+	</nav>
+	
+	<!-- 검색 추가 -->
+	<div class='row ms-5'>
+		<div class="col-lg-12 d-flex justify-content-center ms-4">
+			<form id='searchForm' action="/emp/list" method='get' class="row">
+				<select name='type' class="form-control w-25 me-2">
+					<option value="">전체</option>
+					<option value="N" th:selected="${search.type} == 'N'">이름</option>
+					<option value="D" th:selected="${search.type} == 'D'">부서번호</option>
+					<option value="J" th:selected="${search.type} == 'J'">JOB</option>
+				</select> 
+				<input type='text' name='keyword' class="form-control w-25 me-2" th:value="${search.keyword}" /> 
+				<input type='hidden' name='page' value="1"/> 
+				<select name="pageUnit" class="form-control" style="width: 80px">
+					<option value="10" th:selected="${search.pageUnit} == 10">10</option>
+					<option value="20" th:selected="${search.pageUnit} == 20">20</option>
+					<option value="30" th:selected="${search.pageUnit} == 30">30</option>
+				</select>
+				<button class='btn btn-outline-primary ms-2' style="width: 80px">검색</button>
+			</form>
 		</div>
 	</div>
 		

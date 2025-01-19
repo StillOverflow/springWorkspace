@@ -42,7 +42,8 @@ public class Paging {
 	}
 
 	public int getLastPage() { // 사용
-		lastPage = totalRecord / pageUnit + 1;
+		lastPage = totalRecord / pageUnit;
+		if(lastPage == 0) lastPage = 1;
 		return lastPage;
 	}
 

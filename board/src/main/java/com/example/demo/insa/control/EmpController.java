@@ -40,13 +40,6 @@ public class EmpController {
 	// 사원 전체 조회 & 검색
 	@GetMapping("list")
 	public void list(EmpSearchDTO search, Model model, Paging paging) {
-		List<EmpDTO> empList = eService.getList(search);
-		List<DeptDTO> deptList = dService.getList();
-		List<JobDTO> jobList = eService.getJobList();
-		model.addAttribute("empList", empList);
-		model.addAttribute("deptList", deptList);
-		model.addAttribute("jobList", jobList);
-		
 		// 페이징 적용
 		paging.setTotalRecord(eService.getCount(search));
 		model.addAttribute("search", search);
@@ -57,6 +50,15 @@ public class EmpController {
 		log.debug("paging: " + paging);
 		log.debug("search: " + search);
 		model.addAttribute("list", eService.getList(search));
+		
+		// 목록 출력
+		List<EmpDTO> empList = eService.getList(search);
+		log.debug("사원사원: " + empList);
+		//List<DeptDTO> deptList = dService.getList();
+		//List<JobDTO> jobList = eService.getJobList();
+		model.addAttribute("empList", empList);
+		//model.addAttribute("deptList", deptList);
+		//model.addAttribute("jobList", jobList);
 	}
 	
 	// 사원 등록 폼 열기
