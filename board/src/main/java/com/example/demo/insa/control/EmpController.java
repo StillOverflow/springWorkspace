@@ -61,13 +61,19 @@ public class EmpController {
 		//model.addAttribute("jobList", jobList);
 	}
 	
-	// 사원 등록 폼 열기
+	// 사원 등록 폼 or 상세 조회
 	@GetMapping("register")
-	public void form(Model model) {
+	public void form(EmpDTO emp, Model model) { // /register?employeeId=100 형식
 		List<DeptDTO> deptList = dService.getList();
 		List<JobDTO> jobList = eService.getJobList();
+		EmpDTO employee = new EmpDTO();
+		
+		if(emp.getEmployeeId() != null) employee = eService.getEmp(emp.getEmployeeId());
+		log.info(employee.toString());
+		
 		model.addAttribute("deptList", deptList);
 		model.addAttribute("jobList", jobList);
+		model.addAttribute("emp", employee);
 		model.addAttribute("now", new Date());
 	}
 		

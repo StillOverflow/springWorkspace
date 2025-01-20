@@ -13,7 +13,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col">
-			<h2 class="mt-4">사원 목록</h2>
+			<h2 class="fw-bolder mt-4">사원 목록</h2>
 			<table class="table text-center">
 				<thead class="table-success">
 					<tr>
@@ -32,7 +32,7 @@
 						<td class="text-center" th:text="${emp.jobId}">PROGRAMER</td>
 						<td class="text-center" th:text="${emp.departmentId}"></td>
 						<td class="text-center">
-							<button class="btn btn-light">조회</button>
+							<button class="btn btn-light" th:onclick="|location.href='@{/emp/register(employeeId=${emp.employeeId})}'|">조회</button>
 							<button class="btn btn-outline-danger">삭제</button>
 						</td>
 					</tr>	

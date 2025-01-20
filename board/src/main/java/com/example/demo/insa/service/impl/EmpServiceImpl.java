@@ -37,5 +37,10 @@ public class EmpServiceImpl implements EmpService {
 	public boolean register(EmpDTO emp) {
 		return mapper.register(emp) > 0;
 	}
+
+	@Override
+	public EmpDTO getEmp(String employeeId) {
+		return mapper.getEmp(employeeId);
+	}
 	
 }

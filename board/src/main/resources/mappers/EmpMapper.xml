@@ -31,6 +31,13 @@
 		</where>
 	</select>
 	
+		<!-- 단건조회 -->
+	<select id="getEmp" resultType="com.example.demo.insa.service.EmpDTO">
+		SELECT *
+		FROM   employees
+		WHERE  employee_id = #{employeeId}
+	</select>
+	
 	<!-- jobs 테이블 조회 -->
 	<select id="getJobList" resultType="com.example.demo.insa.service.JobDTO">
 		SELECT * FROM jobs

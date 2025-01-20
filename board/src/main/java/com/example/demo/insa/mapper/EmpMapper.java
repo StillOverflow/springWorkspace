@@ -9,6 +9,7 @@ import com.example.demo.insa.service.JobDTO;
 public interface EmpMapper {
 	List<EmpDTO> getList(EmpSearchDTO search);
 	int getCount(EmpSearchDTO search);
+	EmpDTO getEmp(String employeeId);
 	List<JobDTO> getJobList();
 	int register(EmpDTO emp);
 }
