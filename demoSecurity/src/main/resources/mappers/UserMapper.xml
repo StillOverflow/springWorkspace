@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mappers.UserMapper">
+
+	<!-- getUser + getRole 1:1 변수 매핑 -->
+	<!-- 서브쿼리 형식, 복잡한 매핑을 간편화하거나 매칭되는 타입이 다를 때 유용 -->
+	<resultMap type="UserDTO" id="userMap"> <!-- type(FROM 대상 클래스), id(매핑 대상 resultMap명) -->
+		<id column="id" property="id"/> <!-- 참조 키-값. 생략 가능 -->
+		<result column="password" property="password"/> <!-- 매핑할 키-값. password 컬럼을 UserDTO의 password property에 매핑. 생략 가능 -->
+		
+		<!-- collection : 1:n 관계에서 List로 반환 - 권한이 여러 개일 수 있으므로 -->
+		<collection property="roles" select="getRole" ofType="RoleDTO" column="id"/> 
+	</resultMap>
+
+	<!-- 단건조회 -->
+	<select id="getUser" resultMap="userMap"> <!-- resultMap 이용해 select 시 함께 결과로 담음. (다량 조회 시 JOIN이나 개별 쿼리가 성능 더 좋음) -->
+		SELECT id,
+		       login_id,
+		       password as password, <!-- '{noop}' ||   <= noop : Spring Security에서 비밀번호 암호화 하지 않고 그대로 사용 -->
+		       full_name,
+		       dept_name
+		FROM   t_user
+		where  login_id = #{loginId}
+	</select>
+	
+	<!-- 권한조회 -->
+	<select id="getRole" resultType="RoleDTO">
+		SELECT role_name
+		FROM   t_user_role u
+		JOIN   t_role r ON (u.role_id = r.id)
+		WHERE  u.role_id = #{id}
+	</select>
+	
+	<!-- 비밀번호 인코딩 업데이트 -->
+	<select id="updatePw" parameterType="UserDTO">
+		UPDATE t_user
+		SET    password = #{password}
+		WHERE  id = #{id}
+	</select>
+
+</mapper>
