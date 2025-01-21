@@ -29,9 +29,4 @@ public class EmpServiceTest {
 		List<EmpDTO> list = service.getList(search);
 		log.debug(list.toString());
 	}
-	
-//	@Test
-	@DisplayName("단건조회")
-	void get() {
-	}
 }
