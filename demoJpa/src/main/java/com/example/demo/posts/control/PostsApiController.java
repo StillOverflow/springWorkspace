@@ -1,5 +1,6 @@
 package com.example.demo.posts.control;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,15 +20,21 @@ public class PostsApiController {
 	private final PostService service;
 	
 	// 등록
-	@PostMapping("/save") // GetMapping
+	@PostMapping("/api/v1/posts") // GetMapping
     public Long save(@RequestBody PostsSaveRequestDTO requestDto) {
         return service.save(requestDto);
     }
 	
 	// 수정
-	@PutMapping("/update/{id}") // GetMapping
-    public Long update(@PathVariable Long id, @RequestBody PostsUpdateRequestDTO requestDto) {
+	@PutMapping("/api/v1/posts/{id}") // GetMapping
+    public Long update(@PathVariable("id") Long id, @RequestBody PostsUpdateRequestDTO requestDto) {
         return service.update(id, requestDto);
+    }
+	
+	// 삭제
+	@DeleteMapping("/api/v1/posts/{id}")
+    public Long update(@PathVariable("id") Long id) {
+        return service.delete(id);
     }
 	
 }

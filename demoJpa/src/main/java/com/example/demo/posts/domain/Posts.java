@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor // 기본 생성자
 @Entity
-public class Posts {
+public class Posts extends BaseTimeEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)

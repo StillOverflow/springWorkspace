@@ -3,8 +3,10 @@ package com.example.demo.posts.dto;
 import com.example.demo.posts.domain.Posts;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class PostsResponseDTO {
 	// 단건조회용
 	private Long id;
