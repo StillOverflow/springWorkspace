@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- 그리드 비교 사이트 : https://jsgrids.statico.io/ -->
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- timePicker -->
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
+  <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+
+  <!-- datePicker -->
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+  <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+
+
+  <!-- paging -->
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+  <script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
+
+  <!-- toast grid -->
+  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+  <!-- 엑셀 -->
+  <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
+  <style>
+    .red {
+      background-color: brown;
+    }
+  </style>
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="time">
+  <button type="button" id="btnAdd">행추가</button>
+  <button type="button" id="btnDelete">행삭제</button>
+  <button type="button" id="btnSave">저장</button>
+  <button type="button" id="btnExcel">엑셀</button>
+
+  <div id="grid"></div>
+  <div id="pagination" class="tui-pagination"></div>
+  <script src="basic-dummy.js"></script>
+  <script>
+    //const gridData = []  //basic-dummy.js에 선언되어 있음
+
+    // 버튼 이벤트 핸들러
+    // 행추가
+    btnAdd.addEventListener("click", function () {
+      grid.appendRow({ grade: "1" });
+    })
+
+    //행삭제
+    btnDelete.addEventListener("click", function (e) {
+      let rowKey = grid.getFocusedCell().rowKey;
+      console.log(rowKey)
+      grid.removeRow(rowKey)
+    })
+
+    //저장
+    btnSave.addEventListener("click", function () {
+      grid.blur();
+    })
+
+    //엑셀 다운로드
+    btnExcel.addEventListener("click", function () {
+      const options = {
+        includeHiddenColumns: true,
+        onlySelected: true,
+        fileName: 'myOrder',
+      };
+      grid.export('xlsx', options);
+    })
+
+    class CustomTimeEditor {
+      constructor(props) {
+        const el = document.createElement('input');
+
+        el.className = "tui-grid-cell-content";
+        el.type = 'time';
+
+        el.value = String(props.value);
+
+        this.el = el;
+      }
+
+      getElement() {
+        return this.el;
+      }
+
+      getValue() {
+        return this.el.value;
+      }
+
+      mounted() {
+        this.el.select();
+      }
+    }
+
+
+    //커스텀 에디터 정의
+    class CustomTextEditor {
+      constructor(props) {
+        const el = document.createElement('input');
+        const { maxLength } = props.columnInfo.editor.options;
+
+        el.type = 'text';
+        el.maxLength = maxLength;
+        el.value = String(props.value);
+
+        this.el = el;
+      }
+
+      getElement() {
+        return this.el;
+      }
+
+      getValue() {
+        return this.el.value;
+      }
+
+      mounted() {
+        this.el.select();
+      }
+    }
+
+    // 커스텀 텍스트 랜더러
+    class CustomTextRenderer {
+      constructor(props) {
+        const div = document.createElement('div');
+        div.className = "tootip";
+        this.el = div;
+        this.render(props);
+      }
+
+      getElement() {
+        return this.el;
+      }
+
+      render(props) {
+        this.el.innerText = String(props.value);
+      }
+    }
+
+    var Grid = tui.Grid;
+
+    // 그리드 선언
+    const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      scrollX: false,
+      scrollY: false,
+      rowHeaders: ['rowNum'],
+      pageOptions: {
+        useClient: true,
+        perPage: 5
+      },
+      columns: [
+        {
+          header: 'Name',
+          name: 'name',
+          editor: 'text'
+        },
+        {
+          header: 'Artist',
+          name: 'artist',
+          // renderer: {
+          //   type: CustomTextRenderer
+          // },
+          // editor: {
+          //   type: CustomTextEditor,
+          //   options: {
+          //     maxLength: 10
+          //   }
+          // }
+        },
+        {
+          header: "time",
+          name: "time",
+          //editor : "time",
+          editor: { type: CustomTimeEditor },
+          // editor: {
+          //   type: 'datePicker',
+          //   options: {
+          //     format: 'yyyy-MM-dd HH:mm A',
+          //     timepicker: true
+          //   }
+          // }
+        },
+        {
+          header: "release",
+          name: "release",
+          editor: "datePicker"
+        },
+        {
+          header: 'Type',
+          name: 'typeCode',
+          formatter: 'listItemText',
+          editor: {
+            type: 'select',
+            options: {
+              listItems: [
+                { text: 'Deluxe', value: '1' },
+                { text: 'EP', value: '2' },
+                { text: 'Single', value: '3' }
+              ]
+            }
+          }
+        },
+        {
+          header: 'Genre',
+          name: 'genreCode',
+          formatter: 'listItemText',
+          editor: {
+            type: 'checkbox',
+            options: {
+              listItems: [
+                { text: 'Pop', value: '1' },
+                { text: 'Rock', value: '2' },
+                { text: 'R&B', value: '3' },
+                { text: 'Electronic', value: '4' },
+                { text: 'etc.', value: '5' }
+              ]
+            }
+          },
+          copyOptions: {
+            useListItemText: true // when this option is used, the copy value is concatenated text
+          }
+        },
+        {
+          header: 'Grade',
+          name: 'grade',
+          copyOptions: {
+            useListItemText: true
+          },
+          formatter: 'listItemText',
+          editor: {
+            type: 'radio',
+            options: {
+              listItems: [
+                { text: 'Yes', value: '1' },
+                { text: 'No', value: '2' },
+                { text: 'YN', value: '3' }
+              ]
+            }
+          }
+        }
+      ],  //end of column
+      contextMenu: ({ rowKey, columnName }) => [
+        [
+          {
+            name: 'export',
+            label: 'Export',
+            subMenu: [
+              {
+                name: 'default',
+                label: 'Default',
+                subMenu: [
+                  {
+                    name: 'csvExport',
+                    label: 'CSV export',
+                    action: () => {
+                      grid.export('csv');
+                    },
+                  },
+                  {
+                    name: 'excelExport',
+                    label: 'Excel export(xlsx)',
+                    action: () => {
+                      grid.export('xlsx');
+                    },
+                  },
+                  {
+                    name: 'excelExport',
+                    label: 'Excel export(xls)',
+                    action: () => {
+                      grid.export('xls');
+                    },
+                  },
+                ],
+              },
+              {
+                name: 'includeHeader',
+                label: 'includeHeader: false',
+                subMenu: [
+                  {
+                    name: 'csvExport',
+                    label: 'CSV export',
+                    action: () => {
+                      grid.export('csv', { includeHeader: false });
+                    },
+                  },
+                  {
+                    name: 'excelExport',
+                    label: 'Excel export(xlsx)',
+                    action: () => {
+                      grid.export('xlsx', { includeHeader: false });
+                    },
+                  },
+                  {
+                    name: 'excelExport',
+                    label: 'Excel export(xls)',
+                    action: () => {
+                      grid.export('xls', { includeHeader: false });
+                    },
+                  },
+                ],
+              },
+              {
+                name: 'columnNames',
+                label: `['name', 'artist']`,
+                subMenu: [
+                  {
+                    name: 'csvExport',
+                    label: 'CSV export',
+                    action: () => {
+                      grid.export('csv', { columnNames: ['name', 'artist'] });
+                    },
+                  },
+                  {
+                    name: 'excelExport',
+                    label: 'Excel export(xlsx)',
+                    action: () => {
+                      grid.export('xlsx', { columnNames: ['name', 'artist'] });
+                    },
+                  },
+                  {
+                    name: 'excelExport',
+                    label: 'Excel export(xls)',
+                    action: () => {
+                      grid.export('xls', { columnNames: ['name', 'artist'] });
+                    },
+                  },
+                ],
+              },
+              {
+                name: 'onlySelected',
+                label: 'onlySelected: true',
+                subMenu: [
+                  {
+                    name: 'csvExport',
+                    label: 'CSV export',
+                    action: () => {
+                      grid.export('csv', { onlySelected: true });
+                    },
+                  },
+                  {
+                    name: 'excelExport',
+                    label: 'Excel export(xlsx)',
+                    action: () => {
+                      grid.export('xlsx', { onlySelected: true });
+                    },
+                  },
+                  {
+                    name: 'excelExport',
+                    label: 'Excel export(xls)',
+                    action: () => {
+                      grid.export('xls', { onlySelected: true });
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      ],  //end of contextMenu
+    });
+
+    //그리드 이벤트
+    grid.on('beforeChange', ev => {
+      console.log('before change:', ev);
+    });
+    grid.on('afterChange', ev => {
+      console.log('after change:', ev);
+    })
+    grid.on('click', ev => {
+      console.log(ev);
+      console.log(ev.rowKey, ev.columnName);
+      //console.log(grid.getCell(ev.rowKey, ev.columnName))
+    })
+    //그리드 데이터 리셋
+    grid.resetData(gridData);
+
+    //테마 적용
+    //Grid.applyTheme('striped'); // Call API of static method
+
+    //disable
+    //grid.disableCell(0, "genreCode");
+    //grid.disableRow(1);
+
+    window.setTimeout(function () {
+
+      grid.getData().forEach(row => {
+        //console.log(row)
+        console.log(row.rowKey, row.grade)
+        if (row.grade == '2') {
+          grid.addRowClassName(row.rowKey, "brown");
+        }
+      })
+    }, 200)
+  </script>
+</body>
+
+</html>
