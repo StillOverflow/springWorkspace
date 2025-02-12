@@ -46,7 +46,8 @@ public class RestBoardController {
 
 		// 페이징처리
 		paging.setTotalRecord(service.getCount(searchDTO));
-
+		
+		// 참조 객체 map 구조 (tui grid에서 반드시 요구함.)
 		String str = """
 								{
 				  "result": true,
@@ -59,8 +60,8 @@ public class RestBoardController {
 				  }
 				}
 								""";
-		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String, Object> map = objectMapper.readValue(str, Map.class);
+		ObjectMapper objectMapper = new ObjectMapper(); // json 읽기
+		Map<String, Object> map = objectMapper.readValue(str, Map.class); // json 문자열 str을 map 객체로 반환
 		Map<String, Object> data = (Map) map.get("data");
 		Map<String, Object> pagination = (Map) data.get("pagination");
 
