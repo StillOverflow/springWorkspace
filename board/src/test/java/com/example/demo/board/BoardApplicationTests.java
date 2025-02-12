@@ -101,7 +101,7 @@ class BoardApplicationTests {
 	@DisplayName("전체 조회 페이징 컨트롤러")
 	void getListWithPage() throws Exception {
 		BoardSearchDTO search = new BoardSearchDTO();
-		search.setPage(3);
+//		search.setPage(3);
 		List<BoardDTO> boards = mapper.getListWithPage(search);
 		log.debug("boards: " + boards);
 
